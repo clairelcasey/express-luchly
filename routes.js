@@ -38,11 +38,10 @@ router.post("/add/", async function (req, res, next) {
 router.get("/search/", async function (req, res, next) {
   const searchName = req.query.q;
   console.log('searchName is', searchName);
+
   const customerMatches = await Customer.search(searchName);
 
-  // const reservations = await customer.getReservations();
-  return res.json(customerMatches);
-  // return res.render("customer_detail.html", { customer, reservations });
+  return res.render("customer_list.html", { customers: customerMatches});
 });
 
 /** Show a customer, given their ID. */

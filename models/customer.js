@@ -101,37 +101,18 @@ class Customer {
   /** Search customer first and last names based on search input */
 
   static async search(searchName) {
-    const firstNameResults = await db.query(
+
+    const searchResults = await db.query(
       `SELECT id,
               first_name AS "firstName",
               last_name  AS "lastName",
               phone,
-              notes
-       FROM customers
-       WHERE first_name Like $1
-       ORDER BY last_name, first_name`, [
-         searchName
-       ]
+              notes 
+        FROM customers 
+        WHERE CONCAT(first_name, ' ', last_name) ILIKE $1`, [`%${searchName}%`]
     );
 
-    const firstNameMatches = firstNameResults.rows;
-
-    const lastNameResults = await db.query(
-      `SELECT id,
-              first_name AS "firstName",
-              last_name  AS "lastName",
-              phone,
-              notes
-       FROM customers
-       WHERE last_name Like $1
-       ORDER BY last_name, first_name`, [
-         searchName
-       ]
-    );
-
-    const lastNameMatches = lastNameResults.rows;
-    const allMatches = firstNameMatches.concat(lastNameMatches);
-    return allMatches.map(c => new Customer(c));
+    return searchResults.rows.map(c => new Customer(c));
 
   }
 }
