@@ -7,6 +7,7 @@ const express = require("express");
 
 const Customer = require("./models/customer");
 const Reservation = require("./models/reservation");
+const { BadRequestError } = require("./expressError");
 
 const router = new express.Router();
 
@@ -41,7 +42,19 @@ router.get("/search/", async function (req, res, next) {
 
   const customerMatches = await Customer.search(searchName);
 
-  return res.render("customer_list.html", { customers: customerMatches});
+  return res.render("customer_list.html", { customers: customerMatches });
+});
+
+/** Show list of top X customers by reservation count. */
+
+router.get("/best-customers/:size", async function (req, res, next) {
+  const listSize = Number(req.params.size);
+
+  if (isNaN(listSize)) throw new BadRequestError(`Invalid number: ${req.params.size}`);
+
+  const customers = await Customer.getBestCustomers(listSize);
+
+  return res.render("customer_best.html", { customers, listSize });
 });
 
 /** Show a customer, given their ID. */

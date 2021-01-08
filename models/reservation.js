@@ -52,6 +52,7 @@ class Reservation {
             [this.customerId, this.numGuests, this.startAt, this.notes],
         );
         this.id = result.rows[0].id;
+        
       } else {
         await db.query(
               `UPDATE reservations

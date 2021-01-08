@@ -98,13 +98,15 @@ class Customer {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  /** Search customer first and last names based on search input */
+  /** Search customer first and last names based on search input 
+   * Returns [{customer}, {customer}, ... ]
+  */
 
   static async search(searchName) {
 
     const searchResults = await db.query(
       `SELECT id,
-              first_name AS "firstName",
+              first_name AS "firstName", 
               last_name  AS "lastName",
               phone,
               notes 
@@ -114,6 +116,29 @@ class Customer {
 
     return searchResults.rows.map(c => new Customer(c));
 
+  }
+
+  /* get Top 10 Customers by number of reservations. 
+  Returns [{customer}, {customer}, ... ]
+  */
+
+  static async getBestCustomers(listSize) {
+    const results = await db.query(
+      `SELECT c.id,
+              c.first_name AS "firstName", 
+              c.last_name  AS "lastName",
+              c.phone,
+              c.notes, 
+              COUNT(c.id) AS "reservationCount"
+        FROM reservations as r
+          JOIN customers as c
+          ON r.customer_id = c.id
+        GROUP BY c.id, c.first_name, c.last_name, c.phone, c.notes
+        ORDER BY COUNT(c.id) DESC
+        LIMIT $1;`, [listSize]
+    );
+
+    return results.rows.map(c => new Customer(c));
   }
 }
 
