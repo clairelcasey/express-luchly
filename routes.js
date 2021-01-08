@@ -1,5 +1,6 @@
 "use strict";
 
+const { json } = require("body-parser");
 /** Routes for Lunchly */
 
 const express = require("express");
@@ -30,6 +31,18 @@ router.post("/add/", async function (req, res, next) {
   await customer.save();
 
   return res.redirect(`/${customer.id}/`);
+});
+
+/** Search for a customer by name. */
+
+router.get("/search/", async function (req, res, next) {
+  const searchName = req.query.q;
+  console.log('searchName is', searchName);
+  const customerMatches = await Customer.search(searchName);
+
+  // const reservations = await customer.getReservations();
+  return res.json(customerMatches);
+  // return res.render("customer_detail.html", { customer, reservations });
 });
 
 /** Show a customer, given their ID. */
@@ -83,3 +96,4 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
 });
 
 module.exports = router;
+
