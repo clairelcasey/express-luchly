@@ -75,7 +75,7 @@ router.get("/:id/edit/", async function (req, res, next) {
   res.render("customer_edit_form.html", { customer });
 });
 
-/** Handle editing a customer. */
+/** Handle editing a customer . */
 
 router.post("/:id/edit/", async function (req, res, next) {
   const customer = await Customer.get(req.params.id);
