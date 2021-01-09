@@ -4,16 +4,29 @@
 
   <a class="btn btn-primary" style="float: right" href="/add/">Add a Customer</a>
 
-  <h1>Customers</h1>
+  <h1>{{ header }}</h1>
+  {% if header.startsWith('Top') %}
+  <ol style="column-count: 4">
+    {% for customer in customers %}
+      <li>
+        <a href="/{{ customer.id }}/">
+          {{ customer.fullName }}
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
 
+
+  {% else %}
   <ul style="column-count: 4">
     {% for customer in customers %}
       <li>
         <a href="/{{ customer.id }}/">
-          {{ customer.fullName() }}
+          {{ customer.fullName }}
         </a>
       </li>
     {% endfor %}
   </ul>
+  {% endif %}
 
 {% endblock %}

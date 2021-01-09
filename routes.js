@@ -15,7 +15,8 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
   const customers = await Customer.all();
-  return res.render("customer_list.html", { customers });
+  const header = 'Customers';
+  return res.render("customer_list.html", { customers, header });
 });
 
 /** Form to add a new customer. */
@@ -41,20 +42,20 @@ router.get("/search/", async function (req, res, next) {
   console.log('searchName is', searchName);
 
   const customerMatches = await Customer.search(searchName);
-
-  return res.render("customer_list.html", { customers: customerMatches });
+  const header = 'Customer Search Results';
+  return res.render("customer_list.html", { customers: customerMatches, header });
 });
 
 /** Show list of top X customers by reservation count. */
 
-router.get("/best-customers/:size", async function (req, res, next) {
-  const listSize = Number(req.params.size);
+router.get("/best-customers/", async function (req, res, next) {
+  const listSize = Number(req.query.size) || 10;
 
-  if (isNaN(listSize)) throw new BadRequestError(`Invalid number: ${req.params.size}`);
+  // if (isNaN(listSize)) throw new BadRequestError(`Invalid number: ${req.query.size}`);
 
   const customers = await Customer.getBestCustomers(listSize);
-
-  return res.render("customer_best.html", { customers, listSize });
+  const header = `Top ${listSize} Customers`;
+  return res.render("customer_list.html", { customers, header });
 });
 
 /** Show a customer, given their ID. */

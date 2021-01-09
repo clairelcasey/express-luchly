@@ -16,6 +16,17 @@ class Customer {
     this.notes = notes;
   }
 
+
+  get notes() {
+    console.log('get notes called', 'this._notes', this._notes)
+    return this._notes;
+  }
+
+  set notes(val) {
+    this._notes = val || 'THIS PERSON HAS NO NOTES';
+    console.log('set notes called', 'this._notes', this._notes)
+  }
+
   /** find all customers. */
 
   static async all() {
@@ -93,8 +104,8 @@ class Customer {
 
 
   /** get Customer's full name. Returns 'FirstName LastName' */
-
-  fullName() {
+  
+  get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
 
@@ -118,11 +129,11 @@ class Customer {
 
   }
 
-  /* get Top 10 Customers by number of reservations. 
+  /* get Top X Customers by number of reservations. 
   Returns [{customer}, {customer}, ... ]
   */
 
-  static async getBestCustomers(listSize) {
+  static async getBestCustomers(listSize=10) {
     const results = await db.query(
       `SELECT c.id,
               c.first_name AS "firstName", 
